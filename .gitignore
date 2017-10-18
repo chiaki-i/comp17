@@ -15,6 +15,18 @@ _build/
 *.byte
 *.native
 
+# specifically for comp17
+# generated automatically
+parser.ml
+parser.mli
+parser.output
+lexer.ml
+parser
+
 # oasis generated files
 setup.data
 setup.log
+
+# Emacs unsaved files
+\#*
+.\#*
