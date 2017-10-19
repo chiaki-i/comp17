@@ -10,7 +10,7 @@
 %token LET REC IN
 %token IF THEN ELSE
 %token <int> NUMBER
-/* %token <float> NUMBER */
+%token <float> REAL
 %token <string> VAR
 %token EOF
 
@@ -34,6 +34,8 @@
 simple_expr:
 | NUMBER
   { Syntax.Number ($1) }
+| REAL
+  { Syntax.Real ($1) }
 | VAR
   { Syntax.Variable ($1) }
 | LPAREN expr RPAREN
@@ -69,13 +71,13 @@ expr:
 | IF expr MOREQ expr THEN expr ELSE expr
   { Syntax.IfLess ($2, $4, $8, $6) }
 | IF expr MORE expr THEN expr ELSE expr
-  { Syntax.IfLess ($2, $4, (Syntax.IfEqual ($2, $4, $6, $8)), $6) }
+  { Syntax.IfLess ($4, $2, $6, $8) }
 | IF expr LEQ expr THEN expr ELSE expr
-  { Syntax.IfLess ($2, $4, $6, (Syntax.IfEqual ($2, $4, $6, $8))) }
+  { Syntax.IfLess ($4, $2, $8, $6) }
 | LET VAR EQUAL expr IN expr
   { Syntax.Let (($2, Type.gen_type ()), $4, $6) }
-| LET REC VAR VAR EQUAL expr IN expr
-  { Syntax.LetRec (($3, Type.gen_type ()), [($4, Type.gen_type ())], $6, $8) }
+| LET REC VAR var EQUAL expr IN expr
+  { Syntax.LetRec (($3, Type.gen_type ()), $4, $6, $8) }
 | app
   { $1 }
 
@@ -84,3 +86,9 @@ app:
   { Syntax.Application ($1, [$2]) }
 | simple_expr simple_expr
   { Syntax.Application ($1, [$2]) }
+
+var:
+| VAR
+  { [$1, Type.gen_type ()] }
+| VAR var
+  { ($1, Type.gen_type ()) :: $2 }

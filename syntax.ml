@@ -19,15 +19,15 @@ let rec string_of_expr expr = match expr with
   | Op (arg1, op, arg2) ->
 	"(" ^ string_of_expr arg1
 	    ^ (match op with
-		  Operator.Plus -> " + "
-		| Operator.Minus -> " - "
-		| Operator.Times -> " * "
-		| Operator.Divide -> " / "
+		  Operator.Plus -> "+"
+		| Operator.Minus -> "-"
+		| Operator.Times -> "*"
+		| Operator.Divide -> "/"
 		| Operator.Mod -> " mod "
-		| Operator.PlusDot -> " +. "
-		| Operator.MinusDot -> " -. "
-		| Operator.TimesDot -> " *. "
-		| Operator.DivideDot -> " /. ")
+		| Operator.PlusDot -> "+."
+		| Operator.MinusDot -> "-."
+		| Operator.TimesDot -> "*."
+		| Operator.DivideDot -> "/.")
 	    ^ string_of_expr arg2 ^ ")"
   | IfEqual (arg1, arg2, arg3, arg4) ->
 	"if " ^ string_of_expr arg1

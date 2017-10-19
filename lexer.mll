@@ -4,6 +4,7 @@ open Parser
 
 let space = [' ' '\t' '\n' '\r']
 let digit = ['0'-'9']
+let dot   = '.'
 let lower = ['a'-'z']
 let upper = ['A'-'Z']
 let alpha = lower | upper
@@ -23,6 +24,7 @@ rule token = parse
 | "-."   { MINUSDOT }
 | "*."   { TIMESDOT }
 | "/."   { DIVIDEDOT }
+| "mod"  { MOD }
 | "="    { EQUAL }
 | "<>"   { NEQ }
 | "<"    { LESS }
@@ -39,6 +41,8 @@ rule token = parse
 | "in"   { IN }
 | digit+                        (* 数字が１個以上 *)
          { NUMBER (int_of_string (Lexing.lexeme lexbuf)) }
+| digit+ dot digit* (* 小数 *)
+  	 { REAL (float_of_string (Lexing.lexeme lexbuf)) }
 | lower beta*
 	 { VAR (Lexing.lexeme lexbuf) }
 | eof    { EOF }
