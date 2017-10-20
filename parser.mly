@@ -24,8 +24,8 @@
 %left EQUAL
 %left LESS MORE LEQ MOREQ NEQ
 %left PLUS MINUS PLUSDOT MINUSDOT
-%left TIMES TIMESDOT DIVIDE DIVIDEDOT
-%left MOD
+%left TIMES TIMESDOT DIVIDE DIVIDEDOT MOD
+%nonassoc UNARY
 
 /* less ⟷ moreq → more ⟷ leq */
 /* %% は省略不可 */
@@ -48,6 +48,8 @@ expr:
   { Syntax.Op ($1, Operator.Plus, $3) }
 | expr MINUS expr
   { Syntax.Op ($1, Operator.Minus, $3) }
+| MINUS expr %prec UNARY
+  { Syntax.Op (Syntax.Number (0), Operator.Minus, $2) }
 | expr TIMES expr
   { Syntax.Op ($1, Operator.Times, $3) }
 | expr DIVIDE expr
