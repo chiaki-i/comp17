@@ -78,14 +78,14 @@ expr:
   { Syntax.Let (($2, Type.gen_type ()), $4, $6) }
 | LET REC VAR var EQUAL expr IN expr
   { Syntax.LetRec (($3, Type.gen_type ()), $4, $6, $8) }
-| app
-  { $1 }
+| simple_expr args
+  { Syntax.Application ($1, $2) }
 
-app:
-| app simple_expr
-  { Syntax.Application ($1, [$2]) }
-| simple_expr simple_expr
-  { Syntax.Application ($1, [$2]) }
+args:
+| simple_expr args
+  { $1 :: $2 }
+| simple_expr
+  { [$1] }
 
 var:
 | VAR
