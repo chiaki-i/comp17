@@ -15,10 +15,10 @@
 %token EOF
 
 /* 非終端記号の型の宣言 */
-%type <Syntax.t> expr
+%type <Syntax.t> start
 
 /* 開始記号 */
-%start expr
+%start start
 
 %nonassoc ELSE IN
 %left EQUAL
@@ -30,6 +30,9 @@
 /* less ⟷ moreq → more ⟷ leq */
 /* %% は省略不可 */
 %%
+start:
+| expr
+  { $1 }
 
 simple_expr:
 | NUMBER

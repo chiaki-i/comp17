@@ -1,9 +1,9 @@
 (* メイン関数 *)
 let go () =
-  let program = Parser.expr Lexer.token (Lexing.from_channel stdin) in
-  if Array.length Sys.argv = 1 then begin
-    Syntax.print program;     (* 入力を表示 *)
-    end
+  let program = Parser.start Lexer.token (Lexing.from_channel stdin) in
+					(* 入力を構文解析し、*)
+  let kprogram = Knormal.f program in	(* k-正規形に変換し、*)
+  Knormal.print kprogram		(* 表示する。*)
 
 (* スタートアップ *)
 let _ = go ()
