@@ -95,20 +95,20 @@ let rec g expr = match expr with
   | Syntax.Real (real) -> Real (real)
   | Syntax.Variable (name) -> Variable (name)
   | Syntax.Op (arg1, op, arg2) ->
-    let v1 = Gensym.f "" in
-    let v2 = Gensym.f "" in 
+    let v1 = Gensym.f "op1" in
+    let v2 = Gensym.f "op2" in 
     Let ((v1, Type.gen_type ()), g arg1,
          Let((v2, Type.gen_type ()), g arg2,
              Op (v1, op, v2)))
   | Syntax.IfEqual (arg1, arg2, arg3, arg4) ->
-    let v1 = Gensym.f "" in
-    let v2 = Gensym.f "" in 
+    let v1 = Gensym.f "if" in
+    let v2 = Gensym.f "if" in 
     Let ((v1, Type.gen_type ()), g arg1,
          Let((v2, Type.gen_type ()), g arg2,
-             IfEqual (v1, v2, g arg1, g arg2)))
+             IfEqual (v1, v2, g arg3, g arg4)))
   | Syntax.IfLess (arg1, arg2, arg3, arg4) ->
-    let v1 = Gensym.f "" in
-    let v2 = Gensym.f "" in 
+    let v1 = Gensym.f "if" in
+    let v2 = Gensym.f "if" in 
     Let ((v1, Type.gen_type ()), g arg1,
          Let((v2, Type.gen_type ()), g arg2,
              IfLess (v1, v2, g arg3, g arg4)))
@@ -116,14 +116,14 @@ let rec g expr = match expr with
   | Syntax.LetRec ((f, typ1), lst, arg3, arg4) ->
     LetRec ((f, typ1), lst, g arg3, g arg4)
   | Syntax.Application (Syntax.Variable (name), arg2) ->
-    let v0 = Gensym.f name in
+    let v0 = name in
     (* app_helper : string -> Syntax.t list -> Knormal.t *)
     let rec app_helper v0 args lst = match args with
         [] -> Application (v0, List.rev lst)
       | first :: rest ->
-        let v = Gensym.f "" in
+        let v = Gensym.f "app" in
         Let ((v, Type.gen_type ()), g first, app_helper v0 rest (v :: lst)) in 
-    Let ((v0, Type.gen_type ()), g (Syntax.Variable (name)), app_helper v0 arg2 [])
+    app_helper v0 arg2 []
   | Syntax.Application (name, args) -> raise NotSupported
     
 (* Knormal.f: k-正規形変換プログラムの入口 *)
