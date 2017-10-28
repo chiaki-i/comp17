@@ -12,3 +12,5 @@ let f var =
 	then String.sub var 0 (String.index var '_')
 		 ^ "_" ^ string_of_int !counter
 	else var ^ "_" ^ string_of_int !counter)
+
+(* detect collision among registers *)

@@ -85,6 +85,7 @@ let print prog =
 
 exception NotSupported
 
+(* g : Knormal.t -> First.prog_t *)
 let rec g expr = match expr with
     Knormal.Number (num) -> Number (num)
   | Knormal.Real (f) -> Real (f)
@@ -100,6 +101,7 @@ let rec g expr = match expr with
 	raise NotSupported
   | Knormal.Application (name, args) -> Application (name, args)
 
+(* First.g_program : Knormal.t -> First.prog_t *)
 let rec g_program program = match program with
     Knormal.LetRec ((name, typ), args, arg1, arg2) ->
 	let Program (lst, expr) = g_program arg2 in

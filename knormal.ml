@@ -90,6 +90,7 @@ let rec size expr = match expr with
 
 exception NotSupported
 
+(* g : Syntax.t -> Knormal.t *)
 let rec g expr = match expr with
     Syntax.Number (num) -> Number (num)
   | Syntax.Real (real) -> Real (real)
