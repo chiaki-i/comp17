@@ -13,4 +13,7 @@ let f var =
 		 ^ "_" ^ string_of_int !counter
 	else var ^ "_" ^ string_of_int !counter)
 
+(* register_alloc : alloc.ml において変数テーブルに新しい変数を登録するためのもの *)
+let register_alloc = ref 12
+    
 (* detect collision among registers *)

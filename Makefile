@@ -4,5 +4,5 @@ SOURCES = operator.ml type.ml syntax.ml parser.mly lexer.mll \
 	  register.ml prealloc.ml alloc.ml \
 	  main.ml
 RESULT = prealloc2
-OCAMLMAKEFILE = /home/isstaff/asai/include/OCamlMakefile
+OCAMLMAKEFILE = ~/include/OCamlMakefile
 include $(OCAMLMAKEFILE)

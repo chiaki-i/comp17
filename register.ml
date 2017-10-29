@@ -14,3 +14,8 @@ let is_register r = String.get r 0 = '_'
 (* 変数名が浮動小数点レジスタかどうかを判定する *)
 (* is_fregister : string -> bool *)
 let is_fregister f = String.get f 0 = '_' && String.get f 1 = 'F'
+
+(* レジスタの最大個数11個 *)
+let limit = 12
+let counter = ref 12
+let counter2 = ref 12

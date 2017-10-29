@@ -15,7 +15,7 @@ let rec g expr = match expr with
   | First.Application (name, arg2) ->
     (* app_helper : string -> string list -> int -> First.t *)
     let rec app_helper f args lst cnt = match args with
-        [] -> First.Application(name, List.rev lst)
+        [] -> First.Application (name, List.rev lst)
       | first :: rest ->
         let next = cnt + 1 in
         let rn = Register.make_register next in

@@ -7,4 +7,6 @@
 * k-正規形
 
 ## task3
-* prealloc
+* レジスタ割り当て
+
+## task4
