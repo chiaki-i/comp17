@@ -21,7 +21,7 @@ let rec g expr = match expr with
         let rn = Register.make_register next in
         First.Let ((rn, Type.gen_type ()), First.Variable(first),
                    app_helper f rest (rn :: lst) next) in 
-    app_helper name arg2 [] 0
+    app_helper name arg2 [] Register.minimum
   
 (* g_def : First.def_t -> First.def_t *)
 let rec g_def definition = match definition with First.FunDef ((name, typ), args, expr) ->
@@ -39,7 +39,8 @@ let rec g_def definition = match definition with First.FunDef ((name, typ), args
         let next = cnt + 1 in
         let rn = Register.make_register next in
         (rn, typ_arg) :: def_args_helper rest next in
-   First.FunDef ((name, Type.gen_type()), def_args_helper args 0, def_first_helper args [] expr 0)
+    First.FunDef ((name, Type.gen_type()), def_args_helper args Register.minimum,
+                  def_first_helper args [] expr Register.minimum)
 
 (* g_program : First.prog_t -> First.prog_t *)
 let rec g_program program = match program with
