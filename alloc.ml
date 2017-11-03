@@ -20,13 +20,13 @@ let rec g expr env cnt = match expr with
     if Register.is_register name then
       First.Let ((name, typ), g arg1 env cnt, g arg2 env cnt)
     else
-      let next = (cnt - 1) mod Register.limit in
+      let next = cnt - 1 in
       let new_register = Register.make_register next in
       let new_env = Env.add env name new_register in
       First.Let((new_register, typ), g arg1 env next, g arg2 new_env next) 
   | First.Application (name, arg2) -> First.Application (name, arg2)
 
-(* g_def : First.def_t -> (string * string) list -> First.def_t *)
+(* g_def : First.def_t -> int -> (string * string) list -> First.def_t *)
 let rec g_def env cnt definition = match definition with
     First.FunDef ((name, typ), args, expr) ->
     First.FunDef ((name, typ), args, g expr env Register.limit)
