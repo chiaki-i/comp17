@@ -22,6 +22,11 @@ parser.mli
 parser.output
 lexer.ml
 parser
+test/*
+
+
+# not include machine language
+*.x
 
 # oasis generated files
 setup.data

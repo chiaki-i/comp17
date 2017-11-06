@@ -5,7 +5,7 @@ SOURCES = operator.ml type.ml syntax.ml parser.mly lexer.mll \
 	  code.ml \
 	  main.ml
 RESULT = compiler
-OCAMLMAKEFILE = /home/isstaff/asai/include/OCamlMakefile
+OCAMLMAKEFILE = ~/include/OCamlMakefile
 include $(OCAMLMAKEFILE)
 
 .SUFFIXES: .x .run
