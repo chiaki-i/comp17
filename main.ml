@@ -2,11 +2,11 @@
 (* simple_optimize : Knormal.t -> Knormal.t *)
 let rec simple_optimize kprogram0 =
   let kprogram = kprogram0 in
-  (* let kprogram = Beta.f kprogram in *)		(* β変換 *)
-  (* let kprogram = Eta.f kprogram in *)		(* η変換 *)
-  (* let kprogram = Assoc.f kprogram in *)		(* 結合性変換 *)
-  (* let kprogram = Elim.f kprogram in *)		(* 不要変数除去 *)
-  (* let kprogram = Constf.f kprogram in *)		(* 定数伝播 *)
+  (* let kprogram = Beta.f kprogram in *)      (* β変換 *)
+  (* let kprogram = Beta.f kprogram in *)      (* β変換 *)
+  (* let kprogram = Assoc.f kprogram in *)     (* 結合性変換 *)
+  (* let kprogram = Elim.f kprogram in *)      (* 不要変数除去 *)
+  (* let kprogram = Constf.f kprogram in *)    (* 定数伝播 *)
   if kprogram = kprogram0 then kprogram
 			  else simple_optimize kprogram
 
@@ -14,10 +14,11 @@ let rec simple_optimize kprogram0 =
 (* optimize : Knormal.t -> int -> Knormal.t *)
 let rec optimize kprogram0 n =
   let kprogram = simple_optimize kprogram0 in
-  if n > 0 then (* let kprogram = Expand.f kprogram in *) (* 関数展開 *)
-		let kprogram = simple_optimize kprogram in
-		optimize kprogram (n - 1)
-	   else kprogram
+  if n > 0 then
+    (* let kprogram = Expand.f kprogram in *) (* 関数展開 *)
+    let kprogram = simple_optimize kprogram in
+    optimize kprogram (n - 1)
+  else kprogram
 
 (* メイン関数 *)
 let go () =

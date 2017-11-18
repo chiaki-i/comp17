@@ -9,8 +9,9 @@ let rec add_params env params = match params with
   | (first, t) :: rest -> add_params (Env.add env first (Gensym.f first)) rest
 
 (* メイン *)
-
-let rec g expr env = match expr with
+(* g : Knormal.t -> (string * string) list -> Knormal.t *)
+let rec g expr env =
+  match expr with
     Number (num) -> expr
   | Real (f) -> expr
   | Variable (name) -> Variable (Env.get env name)

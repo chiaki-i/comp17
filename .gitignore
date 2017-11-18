@@ -23,6 +23,9 @@ parser.output
 lexer.ml
 parser
 compiler
+compiler-eta
+compiler-beta
+compiler-assoc
 test/*
 
 

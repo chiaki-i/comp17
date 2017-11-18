@@ -14,5 +14,12 @@ let add env key value = (key, value) :: env
 let rec get env key = match env with
     [] -> raise (UnboundVariable key)
   | (first_key, first_value) :: rest ->
-	if key = first_key then first_value
-			   else get rest key
+	if key = first_key then first_value else get rest key
+
+(* print current environment (= table of variables) : for debugging *)
+(* print_env : string list -> unit *)
+let rec print_env env = match env with
+    [] -> print_newline ()
+  | (first, value) :: rest ->
+    print_string (first ^ "=" ^ value ^ ", ");
+    print_env rest

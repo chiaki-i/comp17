@@ -1,12 +1,12 @@
 SOURCES = operator.ml type.ml syntax.ml parser.mly lexer.mll \
 	  gensym.ml knormal.ml env.ml \
-	  alpha.ml beta.ml eta.ml assoc.ml elim.ml constf.ml \
+	  alpha.ml beta.ml eta.ml assoc.ml \
 	  first.ml \
 	  register.ml prealloc.ml alloc.ml \
 	  code.ml \
 	  main.ml
 RESULT = compiler
-OCAMLMAKEFILE = /home/isstaff/asai/include/OCamlMakefile
+OCAMLMAKEFILE = ~/include/OCamlMakefile
 include $(OCAMLMAKEFILE)
 
 .SUFFIXES: .x .run
