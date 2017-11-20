@@ -27,6 +27,7 @@ compiler-eta
 compiler-beta
 compiler-assoc
 test/*
+original/*
 
 
 # not include machine language

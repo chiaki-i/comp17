@@ -3,7 +3,7 @@
 let rec simple_optimize kprogram0 =
   let kprogram = kprogram0 in
   (* let kprogram = Beta.f kprogram in *)      (* β変換 *)
-  (* let kprogram = Beta.f kprogram in *)      (* β変換 *)
+  (* let kprogram = Eta.f kprogram in *)       (* η変換 *)
   (* let kprogram = Assoc.f kprogram in *)     (* 結合性変換 *)
   (* let kprogram = Elim.f kprogram in *)      (* 不要変数除去 *)
   (* let kprogram = Constf.f kprogram in *)    (* 定数伝播 *)
