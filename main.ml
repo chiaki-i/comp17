@@ -8,7 +8,7 @@ let rec simple_optimize kprogram0 =
   (* let kprogram = Elim.f kprogram in *)      (* 不要変数除去 *)
   (* let kprogram = Constf.f kprogram in *)    (* 定数伝播 *)
   if kprogram = kprogram0 then kprogram
-			  else simple_optimize kprogram
+              else simple_optimize kprogram
 
 (* 各種最適化を n 回、行う *)
 (* optimize : Knormal.t -> int -> Knormal.t *)
@@ -23,18 +23,16 @@ let rec optimize kprogram0 n =
 (* メイン関数 *)
 let go () =
   let program = Parser.start Lexer.token (Lexing.from_channel stdin) in
-					(* 入力を構文解析し、*)
+  (* 入力を構文解析し、*)
   let kprogram = Knormal.f program in	(* k-正規形に変換し、*)
   let kprogram = Alpha.f kprogram in	(* α変換し、*)
   let kprogram = optimize kprogram 0 in	(* 各種最適化を施し、*)
-  Knormal.print kprogram		(* 表示する。*)
-  (*
+  (* Knormal.print kprogram in             (* 表示する。*) *)
   let fprogram = First.f kprogram in	(* １階の言語に変換し、*)
   let fprogram = Prealloc.f fprogram in	(* レジスタ割り当て前処理を行い、*)
   let fprogram = Alloc.f fprogram in	(* レジスタ割り当てを行い、*)
   let asm_code = Code.f fprogram in	(* コード生成を行い、*)
   print_string asm_code			(* 表示する。*)
-  *)
 
 (* スタートアップ *)
 let _ = go ()

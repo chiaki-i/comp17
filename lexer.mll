@@ -12,6 +12,7 @@ let beta  = lower | upper | digit
 
 rule token = parse
 | space+ { token lexbuf }       (* スペースは読み飛ばす *)
+| ";;"   { token lexbuf }
 | "(*" [^ '\n']* "\n"           (* ( * から行末まではコメント *)
          { token lexbuf }
 | "("    { LPAREN }

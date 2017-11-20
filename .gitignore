@@ -28,6 +28,10 @@ compiler-beta
 compiler-assoc
 test/*
 original/*
+beta/*
+eta/*
+assoc/*
+all/*
 
 
 # not include machine language
