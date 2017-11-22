@@ -23,15 +23,15 @@ parser.output
 lexer.ml
 parser
 compiler
-compiler-eta
-compiler-beta
-compiler-assoc
 test/*
 original/*
 beta/*
 eta/*
 assoc/*
 all/*
+elim/*
+simple/*
+constf/*
 
 
 # not include machine language
