@@ -17,19 +17,16 @@ let rec g expr env =
   | Op (name1, op, name2) ->
     Op (get_var env name1, op, get_var env name2)
   | IfEqual (name1, name2, expr3, expr4) ->
-    IfEqual (get_var env name1, get_var env name2,
-             g expr3 env, g expr4 env)
+    IfEqual (get_var env name1, get_var env name2, g expr3 env, g expr4 env)
   | IfLess (name1, name2, expr3, expr4) ->
-    IfLess (get_var env name1, get_var env name2,
-            g expr3 env, g expr4 env)
+    IfLess (get_var env name1, get_var env name2, g expr3 env, g expr4 env)
   | Let ((name, typ), arg1, arg2) ->
     begin
       match arg2 with
       | Variable (var) ->
         if name = var then g arg1 env
         else
-          let new_env = Env.add env name var in 
-          Let ((name, typ), g arg1 env, g arg2 new_env)
+          Let ((name, typ), g arg1 env, g arg2 env)
       | _ -> Let ((name, typ), g arg1 env, g arg2 env)
     end
   | LetRec ((name, typ), args, expr1, expr2) ->

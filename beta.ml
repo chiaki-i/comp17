@@ -29,9 +29,7 @@ let rec g expr env =
         Let ((new_name, typ), g arg1 env, g arg2 env)
     end
   | LetRec ((name, typ), args, arg1, arg2) ->
-    let new_arg1 = g arg1 env in
-    let new_arg2 = g arg2 env in 
-    LetRec ((name, typ), args, new_arg1, new_arg2)
+    LetRec ((name, typ), args, g arg1 env, g arg2 env)
   | Application (name, name_list) ->
     Application (get_var env name, List.map (fun var -> get_var env var) name_list)
 
