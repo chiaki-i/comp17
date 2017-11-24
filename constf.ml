@@ -55,7 +55,7 @@ let rec g expr env = match expr with
       match arg1 with
         Number (num) ->
         let new_env = Env.add env name num in
-        g arg2 new_env
+        Let ((name, typ), g arg1 env, g arg2 new_env)
       | _ -> Let ((name, typ), g arg1 env, g arg2 env)
     end
   | LetRec ((name, typ), args, arg1, arg2) ->
