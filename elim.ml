@@ -16,18 +16,18 @@ let rec is_used x expr = match expr with
   | Variable (var) -> x = var
   | Op (name1, op, name2) -> (x = name1) || (x = name2)
   | IfEqual (name1, name2, arg1, arg2) ->
-    (x = name1) || (x = name2) || (is_used x arg1) || (is_used x arg2)
+    x = name1 || x = name2 || is_used x arg1 || is_used x arg2
   | IfLess (name1, name2, arg1, arg2) ->
-    (x = name1) || (x = name2) || (is_used x arg1) || (is_used x arg2)
+    x = name1 || x = name2 || is_used x arg1 || is_used x arg2
   | Let ((name, typ), arg1, arg2) ->
-    (is_used x arg1) || (x != name && is_used x arg2)
+    is_used x arg1 || (x != name && is_used x arg2)
   | LetRec ((name, typ), args, arg1, arg2) ->
-    let bool_list = List.map (fun (item, _) -> x != item) args in
-    let not_included = (List.fold_left (||) false bool_list) || x != name  in
-    (not_included && is_used x arg1) || (x != name && is_used x arg2)
+    let bool_list = List.map (fun (item, _) -> x = item) args in
+    let included = (List.fold_left (||) false bool_list) || x = name in
+    (not included && is_used x arg1) || (x != name && is_used x arg2)
   | Application (name, name_list) ->
     let bool_list = List.map (fun item -> x = item) name_list in
-    List.fold_left (||) false bool_list
+    x = name || (List.fold_left (||) false bool_list)
 
 (* expr が自明かどうか判定する *)
 (* is_trivial : Knormal.t -> bool *)
@@ -61,7 +61,7 @@ let rec g expr = match expr with
   | LetRec ((name, typ), args, arg1, arg2) ->
     let new_arg1 = g arg1 in
     let new_arg2 = g arg2 in
-    if not (is_used name new_arg2) then new_arg2
+    if (not (is_used name new_arg2)) then new_arg2
     else LetRec ((name, typ), args, new_arg1, new_arg2)
   | Application (name, name_list) -> expr
 
