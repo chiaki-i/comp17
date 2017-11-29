@@ -19,6 +19,18 @@ let is_fregister f = String.get f 0 = '_' && String.get f 1 = 'F'
 let minimum = 0
  
 (* レジスタの最大個数11個 *)
-let limit = 12
-let counter = ref 12
-let counter2 = ref 12
+let limit = 11
+
+(* レジスタ名から番号を抜き出す *)
+let extract_num r =
+  let length = String.length r in 
+  if length = 4 then int_of_string (Char.escaped (String.get r 3))
+  else int_of_string ((Char.escaped (String.get r 3)) ^
+                      (Char.escaped (String.get r 4)))
+
+exception NoAvailableRegister
+(* 使用可能なレジスタ番号のうち最も大きいものを返す *)
+let rec max_num lst cnt =
+  if cnt = 0 then raise NoAvailableRegister else
+  if List.mem cnt lst then max_num lst (cnt - 1)
+  else cnt
