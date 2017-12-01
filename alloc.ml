@@ -83,7 +83,7 @@ let rec alloc_one v env t_lst i_lst =
          print_lst1 "nomi" nominee; *)
       match nominee with
         [] -> (let next = Register.max_num prohibited_num Register.limit in
-               print_string  ((string_of_int next) ^ " ");
+               (* print_string  ((string_of_int next) ^ " "); *)
                Register.make_register next)
       | x :: _ -> x
     end

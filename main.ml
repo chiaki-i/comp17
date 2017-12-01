@@ -27,13 +27,13 @@ let go () =
   let kprogram = Knormal.f program in	(* k-正規形に変換し、*)
   let kprogram = Alpha.f kprogram in	(* α変換し、*)
   let kprogram = optimize kprogram 0 in	(* 各種最適化を施し、*)
-  (* Knormal.print kprogram in             (* 表示する。*) *)
+  (* Knormal.print kprogram *)
   let fprogram = First.f kprogram in	(* １階の言語に変換し、*)
   let fprogram = Prealloc.f fprogram in	(* レジスタ割り当て前処理を行い、*)
   let fprogram = Alloc.f fprogram in	(* レジスタ割り当てを行い、*)
-  First.print fprogram
-  (* let asm_code = Code.f fprogram in	(* コード生成を行い、*)
-                            print_string asm_code			(* 表示する。*)*)
+  (* First.print fprogram *)
+  let asm_code = Code.f fprogram in	    (* コード生成を行い、*)
+  print_string asm_code                 (* 表示する。*)
 
 (* スタートアップ *)
 let _ = go ()
