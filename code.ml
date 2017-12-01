@@ -10,6 +10,9 @@ let r_bp = "_R_bp"
 let r_ax = "_R_ax"
 let r_dx = "_R_dx"
 
+(* 関数呼び出しの結果は r0 に入る *)
+let r0 = "_R_0";;
+
 (* instructions *)
 
 let label l =	  l ^ ":\n"
@@ -41,13 +44,9 @@ let middle =	"\n" ^
 			pushq "%r13" ^
 			pushq "%r14" ^
 			pushq "%r15" ^
-			pushq r_bp ^
-			movq r_sp r_bp ^
 		"    # main program start\n"
 let last =	"    # main program end\n" ^
 			movq (make_register 0) r_ax ^
-			movq r_bp r_sp ^
-			popq r_bp ^
 			popq "%r15" ^
 			popq "%r14" ^
 			popq "%r13" ^
@@ -65,8 +64,7 @@ let rec pop_live live = match live with
     [] -> ""
   | var :: rest -> pop_live rest ^ popq var
 
-(* main *)
-                     
+(* main *)              
 exception NotSupported
 
 (* del_v : string list -> string -> string list *)
@@ -82,22 +80,22 @@ let rec expand lst = match lst with
 
 (* free_vars : First.t -> string list *)
 let rec free_vars expr = match expr with
-    First.Number (c) -> []
-  | First.Variable (v) -> [v]
-  | First.Op (v1, op, v2) -> [v1; v2]
-  | First.IfEqual (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
-  | First.IfLess (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
-  | First.Let ((v, _), e1, e2) -> (free_vars e1) @ (del_v (free_vars e2) v)
-  | First.Application (f, args) -> args
+    Number (c) -> []
+  | Variable (v) -> [v]
+  | Op (v1, op, v2) -> [v1; v2]
+  | IfEqual (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
+  | IfLess (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
+  | Let ((v, _), e1, e2) -> (free_vars e1) @ (del_v (free_vars e2) v)
+  | Application (f, args) -> args
   | _ -> []
-    
+
 (* g : First.t -> string -> string list -> string *)
 let rec g expr z live = match expr with
-    First.Number (num) -> movqi num z
-  | First.Real (f) -> raise NotSupported
-  | First.Variable (v) ->
+    Number (num) -> movqi num z
+  | Real (f) -> raise NotSupported
+  | Variable (v) ->
     if v = z then "" else movq v z
-  | First.Op (v1, op, v2) ->
+  | Op (v1, op, v2) ->
     begin
       match op with
         Operator.Plus -> (movq v1 r_ax) ^ (addq v2 r_ax) ^ (movq r_ax z)
@@ -107,27 +105,50 @@ let rec g expr z live = match expr with
       | Operator.Mod -> (sarqi 63 r_dx) ^ (movq v1 r_ax) ^ (idivq v2) ^ (movq r_dx z)
       | _ -> raise NotSupported
     end
-  | First.IfEqual (v1, v2, e3, e4) ->
+  | IfEqual (v1, v2, e3, e4) ->
     let l1 = Gensym.f "l" in
     let l2 = Gensym.f "l" in 
     (cmpq v1 v2) ^ (jne l1) ^ (g e3 z live) ^ (jmp l2) ^
       (label l1) ^ (g e4 z live) ^ (label l2)
-  | First.IfLess (v1, v2, e3, e4) ->
+  | IfLess (v1, v2, e3, e4) ->
     let l1 = Gensym.f "l" in
     let l2 = Gensym.f "l" in
     (cmpq v1 v2) ^ (jle l1) ^ (g e3 z live) ^ (jmp l2) ^
     (label l1) ^ (g e4 z live) ^ (label l2)
-  | First.Let ((v, _), e1, e2) ->
+  | Let ((v, _), e1, e2) ->
     (g e1 v (live @ (del_v (free_vars e2) v))) ^ (g e2 z live) (* revise the case of e1 *)
-  | First.Application (f, args) ->
+  | Application (f, args) ->
     if z = (Register.make_register 0) then (push_live live) ^ (call f) ^ (pop_live live)
     else (push_live live) ^ (call f) ^ (movq (Register.make_register 0) z) ^ (pop_live live)
 
+(* tail : First.t -> string *)
+let rec tail expr = match expr with
+    Number (num) -> (movqi num r0) ^ ret
+  | Real (real) -> raise NotSupported
+  | Variable (var) -> (movq var r0) ^ ret
+  | Op (v1, op, v2) ->
+    begin
+      match op with
+        Operator.Plus -> (movq v1 r_ax) ^ (addq v2 r_ax) ^ (movq r_ax r0) ^ ret
+      | Operator.Minus -> (movq v1 r_ax) ^ (subq v2 r_ax) ^ (movq r_ax r0) ^ ret
+      | Operator.Times -> (movq v1 r_ax) ^ (imulq v2 r_ax) ^ (movq r_ax r0) ^ ret
+      | Operator.Divide -> (sarqi 63 r_dx) ^ (movq v1 r_ax) ^ (idivq v2) ^ (movq v1 r_ax) ^ ret
+      | Operator.Mod -> (sarqi 63 r_dx) ^ (movq v1 r_ax) ^ (idivq v2) ^ (movq r_dx r0) ^ ret
+      | _ -> raise NotSupported
+    end
+  | IfEqual (v1, v2, arg1, arg2) ->
+    let l = Gensym.f "l" in
+    (cmpq v1 v2) ^ (jne l) ^ (tail arg1) ^ (label l) ^ (tail arg2)
+  | IfLess (v1, v2, arg1, arg2) ->
+    let l = Gensym.f "l" in
+    (cmpq v1 v2) ^ (jne l) ^ (tail arg1) ^ (label l) ^ (tail arg2)
+  | Let ((name, typ), arg1, arg2) ->
+    (g arg1 name (del_v (free_vars arg2) name)) ^ (tail arg2)
+  | Application (name, name_list) -> (jmp name)
+
 (* g_def : First.def_t -> string *)
 let g_def definition = match definition with
-  First.FunDef ((f, _), args, expr) ->
-  (label f) ^ (pushq r_bp) ^ (movq r_sp r_bp) ^ (* local variables *)
-  (g expr (Register.make_register 0) []) ^ (movq r_bp r_sp) ^ (popq r_bp) ^ ret
+  First.FunDef ((f, _), args, expr) -> (label f) ^ (tail expr) (* plus local variables *)
     
 (* g_program : First.prog_t -> string *)
 let g_program program = match program with
