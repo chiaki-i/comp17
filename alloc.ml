@@ -2,26 +2,9 @@
    環境の変数テーブルは、変数とその変数に割り当てられているレジスタのペアのリストになっている. *)
 (* ここでは、Env.get は環境から変数名をkeyとして、valueであるレジスタ名を返す
    Env.get : (string * string) list -> string -> string *)
-open First
+open Closure
 open Print
 
-(* del_v : string list -> string -> string list *)
-let rec del_v lst v = match lst with
-    [] -> []
-  | first :: rest ->
-    if first = v then del_v rest v else first :: del_v rest v
-
-(* free_vars : First.t -> string list *)
-let rec free_vars expr = match expr with
-    First.Number (c) -> []
-  | First.Variable (v) -> [v]
-  | First.Op (v1, op, v2) -> [v1; v2]
-  | First.IfEqual (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
-  | First.IfLess (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
-  | First.Let ((v, _), e1, e2) -> (free_vars e1) @ (del_v (free_vars e2) v)
-  | First.Application (f, args) -> args
-  | _ -> []
-         
 (* 関数を呼び出した結果は r0 に入る *)
 let r0 = "_R_0";;
 

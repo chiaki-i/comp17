@@ -4,7 +4,7 @@
 #define _R_dx %rdx
 #define _R_2  %rsi
 #define _R_3  %rdi
-#define _R_bp %rbp
+#define _R_hp %rbp
 #define _R_sp %rsp
 #define _R_4  %r8
 #define _R_5  %r9

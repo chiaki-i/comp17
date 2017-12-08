@@ -26,6 +26,7 @@ rule token = parse
 | "*."   { TIMESDOT }
 | "/."   { DIVIDEDOT }
 | "mod"  { MOD }
+| "%"    { RESIDUE }
 | "="    { EQUAL }
 | "<>"   { NEQ }
 | "<"    { LESS }

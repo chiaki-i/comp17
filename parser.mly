@@ -3,7 +3,7 @@
 %}
 
 %token LPAREN RPAREN 
-%token PLUS MINUS TIMES DIVIDE MOD
+%token PLUS MINUS TIMES DIVIDE MOD RESIDUE
 %token PLUSDOT MINUSDOT TIMESDOT DIVIDEDOT 
 %token EQUAL NEQ LESS MORE LEQ MOREQ
 %token TRUE FALSE
@@ -24,7 +24,7 @@
 %left EQUAL
 %left LESS MORE LEQ MOREQ NEQ
 %left PLUS MINUS PLUSDOT MINUSDOT
-%left TIMES TIMESDOT DIVIDE DIVIDEDOT MOD
+%left TIMES TIMESDOT DIVIDE DIVIDEDOT MOD RESIDUE
 %nonassoc UNARY
 
 /* less ⟷ moreq → more ⟷ leq */
@@ -59,6 +59,8 @@ expr:
   { Syntax.Op ($1, Operator.Divide, $3) }
 | expr MOD expr
   { Syntax.Op ($1, Operator.Mod, $3) }
+| expr RESIDUE expr
+  { Syntax.Op ($1, Operator.Residue, $3) }
 | expr PLUSDOT expr
   { Syntax.Op ($1, Operator.PlusDot, $3) }
 | expr MINUSDOT expr

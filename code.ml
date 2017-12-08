@@ -1,6 +1,6 @@
 (* Intel 用コード生成 *)
 
-open First
+open Closure
 open Register
 
 (* registers *)
@@ -67,27 +67,10 @@ let rec pop_live live = match live with
 (* main *)              
 exception NotSupported
 
-(* del_v : string list -> string -> string list *)
-let rec del_v lst v = match lst with
-    [] -> []
-  | first :: rest ->
-    if first = v then del_v rest v else first :: del_v rest v
-
 (* expand : string list -> string *)
 let rec expand lst = match lst with
     [] -> ""
   | first :: rest -> first ^ (expand rest)
-
-(* free_vars : First.t -> string list *)
-let rec free_vars expr = match expr with
-    Number (c) -> []
-  | Variable (v) -> [v]
-  | Op (v1, op, v2) -> [v1; v2]
-  | IfEqual (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
-  | IfLess (v1, v2, e3, e4) -> (free_vars e3) @ (free_vars e4) @ [v1; v2]
-  | Let ((v, _), e1, e2) -> (free_vars e1) @ (del_v (free_vars e2) v)
-  | Application (f, args) -> args
-  | _ -> []
 
 (* g : First.t -> string -> string list -> string *)
 let rec g expr z live = match expr with
