@@ -45,7 +45,7 @@ let rec string_of_expr expr i = match expr with
         | Operator.Times -> "*"
         | Operator.Divide -> "/"
         | Operator.Mod -> " mod "
-        | Operator.Residue -> " % "
+        | Operator.Residue -> "%"
         | Operator.PlusDot -> "+."
         | Operator.MinusDot -> "-."
         | Operator.TimesDot -> "*."

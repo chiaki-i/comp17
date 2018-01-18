@@ -26,14 +26,13 @@ let go () =
   let kprogram = Alpha.f kprogram in    (* α変換し、*)
   let kprogram = optimize kprogram 0 in (* 各種最適化を施し、*)
   let cprogram = Closure.f kprogram in  (* クロージャ変換を行い、*)
-  Closure.print cprogram
-(*
+  (* Closure.print cprogram *)
   let cprogram = Prealloc.f cprogram in (* レジスタ割り当て前処理を行い、*)
-  (* Closure.print cprogram; *)
-  let cprogram = Alloc.f cprogram in    (* レジスタ割り当てを行い、*)
-  (* Closure.print cprogram; *)
-  let asm_code = Code.f cprogram in (* コード生成を行い、*)
-  print_string asm_code         (* 表示する。*) *)
+  Closure.print cprogram
+  (* let cprogram = Alloc.f cprogram in    (\* レジスタ割り当てを行い、*\)
+   * (\* Closure.print cprogram; *\)
+   * let asm_code = Code.f cprogram in (\* コード生成を行い、*\)
+   * print_string asm_code         (\* 表示する。*\) *)
     
 (* スタートアップ *)
 let _ = go ()

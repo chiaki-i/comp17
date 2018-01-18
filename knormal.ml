@@ -117,15 +117,27 @@ let rec g expr = match expr with
   | Syntax.Let ((v, typ), arg2, arg3) -> Let ((v, typ), g arg2, g arg3)
   | Syntax.LetRec ((f, typ1), lst, arg3, arg4) ->
     LetRec ((f, typ1), lst, g arg3, g arg4)
-  | Syntax.Application (Syntax.Variable (name), arg2) ->
-    (* app_helper : string -> Syntax.t list -> Knormal.t *)
-    let rec app_helper v0 args lst = match args with
-        [] -> Application (v0, List.rev lst)
-      | first :: rest ->
-        let v = Gensym.f "app" in
-        Let ((v, Type.gen_type ()), g first, app_helper v0 rest (v :: lst)) in 
-    app_helper name arg2 []
-  | Syntax.Application (name, args) -> raise NotSupported
+  (* | Syntax.Application (Syntax.Variable (name), arg2) -> *)
+  (* app_helper : string -> Syntax.t list -> Knormal.t *)
+  (* let rec app_helper v0 args lst = match args with *)
+  (*     [] -> Application (v0, List.rev lst) *)
+  (*   | first :: rest -> *)
+  (*     let v = Gensym.f "app" in *)
+  (*     Let ((v, Type.gen_type ()), g first, app_helper v0 rest (v :: lst)) in *)
+  (*   app_helper name arg2 [] *)
+  | Syntax.Application (arg1, arg2) ->
+    match arg1 with
+      Syntax.Variable (name) ->
+      (* app_helper : string -> Syntax.t list -> Knormal.t *)
+      let rec app_helper v0 args lst = match args with
+          [] -> Application (v0, List.rev lst)
+          | first :: rest ->
+            let v = Gensym.f "app" in
+            Let ((v, Type.gen_type ()), g first, app_helper v0 rest (v :: lst)) in
+      app_helper name arg2 []
+    | Syntax.Application (arg1, arg2) -> (* higher-order function *) 
+      raise NotSupported
+    | _ -> raise NotSupported
     
 (* Knormal.f: k-正規形変換プログラムの入口 *)
 
