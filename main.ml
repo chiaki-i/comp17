@@ -28,10 +28,10 @@ let go () =
   let cprogram = Closure.f kprogram in  (* クロージャ変換を行い、*)
   (* Closure.print cprogram *)
   let cprogram = Prealloc.f cprogram in (* レジスタ割り当て前処理を行い、*)
+  (* Closure.print cprogram *)
+  let cprogram = Alloc.f cprogram in    (* レジスタ割り当てを行い、*)
   Closure.print cprogram
-  (* let cprogram = Alloc.f cprogram in    (\* レジスタ割り当てを行い、*\)
-   * (\* Closure.print cprogram; *\)
-   * let asm_code = Code.f cprogram in (\* コード生成を行い、*\)
+  (* let asm_code = Code.f cprogram in (\* コード生成を行い、*\)
    * print_string asm_code         (\* 表示する。*\) *)
     
 (* スタートアップ *)

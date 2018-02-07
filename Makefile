@@ -2,7 +2,7 @@ SOURCES = operator.ml type.ml syntax.ml parser.mly lexer.mll print.ml \
 	  gensym.ml knormal.ml env.ml \
 	  alpha.ml beta.ml eta.ml assoc.ml elim.ml constf.ml \
 	  closure.ml \
-	  register.ml prealloc.ml \
+	  register.ml prealloc.ml alloc.ml \
 	  main.ml
 RESULT = compiler
 OCAMLMAKEFILE = ~/include/OCamlMakefile

@@ -125,20 +125,15 @@ let rec g expr = match expr with
   (*     let v = Gensym.f "app" in *)
   (*     Let ((v, Type.gen_type ()), g first, app_helper v0 rest (v :: lst)) in *)
   (*   app_helper name arg2 [] *)
-  | Syntax.Application (arg1, arg2) ->
-    match arg1 with
-      Syntax.Variable (name) ->
-      (* app_helper : string -> Syntax.t list -> Knormal.t *)
-      let rec app_helper v0 args lst = match args with
-          [] -> Application (v0, List.rev lst)
-          | first :: rest ->
-            let v = Gensym.f "app" in
-            Let ((v, Type.gen_type ()), g first, app_helper v0 rest (v :: lst)) in
-      app_helper name arg2 []
-    | Syntax.Application (arg1, arg2) -> (* higher-order function *) 
-      raise NotSupported
-    | _ -> raise NotSupported
-    
+  | Syntax.Application (arg, args) ->
+    let new_arg = Gensym.f "app" in
+    let new_args = List.map (fun _ -> Gensym.f "app") args in
+    List.fold_left2
+      (fun exp arg1 arg2 -> Let ((arg1, Type.gen_type ()), arg2, exp)) 
+      (Application (new_arg, new_args))
+      (List.rev (new_arg :: new_args))
+      (List.rev (g arg :: List.map g args))
+      
 (* Knormal.f: k-正規形変換プログラムの入口 *)
 
 let f program = g program

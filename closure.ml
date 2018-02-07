@@ -181,12 +181,18 @@ let rec freevars_cls expr = match expr with
   | AppC (var, args) -> var :: args
   | AppD (_, args) -> args
 
+let rec remove strlst typlst = match typlst with
+    [] -> strlst
+  | (name, typ) :: rest ->
+    let new_strlst = List.filter (fun x -> x <> name) strlst in
+    remove new_strlst rest
+
 (* クロージャ変換のメイン *)
 
 (* def_list : (Closure.def_t list) ref のつもり *)
 let def_list = ref []
 
-(* g : Knormal.t -> Closure.prog_t *)
+(* g : Knormal.t -> Closure.t *)
 let rec g expr vars = match expr with (* verbose version *)
     Knormal.Number (num) -> Number (num)
   | Knormal.Real (f) -> Real (f)
@@ -202,12 +208,10 @@ let rec g expr vars = match expr with (* verbose version *)
     begin
       let new_arg1 = g arg1 vars in
       let new_arg2 = g arg2 vars in
-      let str_args = List.map (fun (a, b) -> a) args in
-      let vlst = name :: str_args in 
-      let fv = (del_vlst (freevars_cls new_arg1) vlst) in
-      let with_typ = List.map (fun x -> (x, (Type.gen_type ()))) fv in
-      def_list := FunDef ((name, typ), with_typ, args, new_arg1) :: !def_list;
-      LetClosure ((name, typ), Cls ((name, typ), with_typ), new_arg2)
+      let fv = remove (freevars_cls new_arg1) args in
+      let new_fv = List.map (fun x -> (x, (Type.gen_type ()))) fv in
+      def_list := (FunDef ((name, typ), new_fv, args, new_arg1)) :: !def_list;
+      LetClosure ((name, typ), Cls ((name, typ), new_fv), new_arg2)
     end
   | Knormal.Application (name, args) ->
     if List.mem name vars then AppC (name, args) else AppD (name, args)
